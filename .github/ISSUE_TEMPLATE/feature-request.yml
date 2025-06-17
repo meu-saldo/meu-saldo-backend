@@ -3,6 +3,7 @@ description: Solicitação de uma nova funcionalidade ou tarefa
 title: "[US-XX] "
 labels: ["enhancement"]
 assignees: ["nathannolacio"]
+type: Feature
 
 body:
   - type: textarea
