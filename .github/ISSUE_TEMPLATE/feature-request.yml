@@ -5,11 +5,14 @@ labels: ["feature"]
 assignees: []
 
 body:
-  - type: markdown
+  - type: textarea
+    id: descricao
     attributes:
-      value: |
-        ## 📄 Descrição
-        Descreva de forma clara e objetiva a funcionalidade ou tarefa a ser desenvolvida.
+    label: 📄 Descrição
+    description: Descreva de forma clara e objetiva a funcionalidade ou tarefa a ser desenvolvida.
+    placeholder: Exemplo: Criar endpoint para cadastro de transação...
+    value: |
+      <!-- Descrição detalhada da funcionalidade -->
 
   - type: textarea
     id: criterios
