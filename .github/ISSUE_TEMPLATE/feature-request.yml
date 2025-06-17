@@ -2,18 +2,17 @@ name: 💡 Feature Request
 description: Solicitação de uma nova funcionalidade ou tarefa
 title: "[US-XX] "
 labels: ["enhancement"]
-assignees: [nathannolacio]
-type: Feature
+assignees: ["nathannolacio"]
 
 body:
   - type: textarea
     id: descricao
     attributes:
-    label: 📄 Descrição
-    description: Descreva de forma clara e objetiva a funcionalidade ou tarefa a ser desenvolvida.
-    placeholder: Exemplo: Criar endpoint para cadastro de transação...
-    value: |
-      <!-- Descrição detalhada da funcionalidade -->
+      label: 📄 Descrição
+      description: Descreva de forma clara e objetiva a funcionalidade ou tarefa a ser desenvolvida.
+      placeholder: Exemplo: Criar endpoint para cadastro de transação...
+      value: |
+        <!-- Descrição detalhada da funcionalidade -->
 
   - type: textarea
     id: criterios
