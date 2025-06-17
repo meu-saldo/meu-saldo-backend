@@ -1,8 +1,9 @@
 name: 💡 Feature Request
 description: Solicitação de uma nova funcionalidade ou tarefa
 title: "[US-XX] "
-labels: ["feature"]
-assignees: []
+labels: ["enhancement"]
+assignees: [nathannolacio]
+type: Feature
 
 body:
   - type: textarea
