@@ -1,5 +1,7 @@
 # 💼 Meu Saldo - Backend
 
+![Java CI](https://github.com/meu-saldo/meu-saldo-backend/actions/workflows/ci.yml/badge.svg?branch=dev)
+
 Este é o backend da aplicação **Meu Saldo**, uma plataforma de gerenciamento financeiro pessoal. Desenvolvido com **Spring Boot**, fornece uma API REST para autenticação, controle de transações, cálculo de saldo e outras funcionalidades.
 
 ---
