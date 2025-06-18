@@ -1,0 +1,52 @@
+name: 💡 Feature Request
+description: Solicitação de uma nova funcionalidade ou tarefa
+title: "[US-XX] "
+labels: ["enhancement"]
+type: Feature
+
+body:
+  - type: textarea
+    id: descricao
+    attributes:
+      label: "📄 Descrição"
+      description: "Descreva de forma clara e objetiva a funcionalidade ou tarefa a ser desenvolvida."
+      placeholder: "Exemplo: Criar endpoint para cadastro de transação..."
+      value: |
+        <!-- Descrição detalhada da funcionalidade -->
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: "🎯 Critérios de Aceite"
+      description: "Liste os critérios para que essa issue seja considerada concluída."
+      placeholder: |
+        - [ ] Critério 1
+        - [ ] Critério 2
+        - [ ] Critério 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: checklist
+    attributes:
+      label: "✅ Checklist Técnico"
+      description: "Liste os passos técnicos que precisam ser realizados."
+      placeholder: |
+        - [ ] Model/Entidade
+        - [ ] DTO
+        - [ ] Service
+        - [ ] Controller
+        - [ ] Repository (se necessário)
+        - [ ] Testes
+        - [ ] Documentação
+    validations:
+      required: true
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: "🔗 Contexto Adicional"
+      description: "Inclua qualquer informação adicional, link, exemplo de payload, prints, etc."
+      placeholder: "Exemplo de JSON de request, prints, regras específicas, etc."
+    validations:
+      required: false
