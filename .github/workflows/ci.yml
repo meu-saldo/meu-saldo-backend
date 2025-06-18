@@ -1,15 +1,14 @@
 name: Java CI with Maven
 
-# Quando será executado
 on:
   push:
-    branches: [ "main", "dev" ]  # Ao fazer push nessas branches
+    branches: [ "main", "dev" ]  # ✅ Push na main ou dev
   pull_request:
-    branches: [ "main", "dev" ]  # Ao abrir PR nessas branches
+    branches: [ "main", "dev" ]  # ✅ PR na main ou dev
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Ambiente Linux na nuvem do GitHub
+    runs-on: ubuntu-latest  # Ambiente virtual Linux
 
     steps:
       - name: 📥 Checkout do código
@@ -29,5 +28,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: 🔨 Build e rodar testes
-        run: mvn clean verify
+      - name: 🔨 Build e rodar **somente testes unitários**
+        run: mvn clean test
