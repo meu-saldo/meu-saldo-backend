@@ -18,7 +18,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User cadastrarUsuario(UserRequestDTO dto) {
+    public User registerUser(UserRequestDTO dto) {
         if (userRepository.existsByEmail(dto.email())) {
             throw new EmailAlreadyExistsException();
         }
