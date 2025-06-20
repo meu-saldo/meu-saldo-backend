@@ -1,0 +1,32 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main", "dev" ]  # ✅ Push na main ou dev
+  pull_request:
+    branches: [ "main", "dev" ]  # ✅ PR na main ou dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Ambiente virtual Linux
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: ☕ Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: 🗄️ Cache dependências do Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: 🔨 Build e rodar **somente testes unitários**
+        run: mvn clean test
