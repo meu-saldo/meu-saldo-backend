@@ -4,8 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class User {
@@ -14,12 +12,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 5)
     private String name;
-
-    @Email
     private String email;
-
     private String password;
 
     public User() {
@@ -40,19 +34,19 @@ public class User {
         this.id = id;
     }
 
-    public @Size(min = 5) String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@Size(min = 5) String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public @Email String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(@Email String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
