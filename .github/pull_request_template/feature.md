@@ -1,42 +1,32 @@
-# 📄 Descrição
+## Descrição
 
 <!-- Descreva brevemente o que foi implementado ou corrigido neste PR -->
 
----
+## Tipo de mudança
 
-# 🛠️ Tipo de mudança
+- [ ] Correção de bug (fix)
+- [ ] Nova funcionalidade (feature)
+- [ ] Refatoração (refactor)
+- [ ] Documentação (docs)
+- [ ] Outro (especifique):
 
-- [ ] 🐛 Correção de bug (fix)
-- [ ] ✨ Nova funcionalidade (feature)
-- [ ] 🔨 Refatoração (refactor)
-- [ ] 📚 Documentação (docs)
-- [ ] ⚙️ Outro (especifique):
-
----
-
-# 🔗 Issue relacionada
+## Issue relacionada
 
 <!-- Coloque o número da issue que esse PR resolve, ex: closes #123 -->
 
----
-
-# ✅ Critérios de Aceite
+## Critérios de Aceite
 
 - [ ] Critério 1
 - [ ] Critério 2
 - [ ] Critério 3
 
----
+## Checklist Técnico
 
-# 📋 Checklist Técnico
+- [ ] Código revisado
+- [ ] Testes adicionados / atualizados
+- [ ] Build passando
+- [ ] Documentação atualizada (se necessário)
 
-- [ ] ✅ Código revisado
-- [ ] 🧪 Testes adicionados / atualizados
-- [ ] 🏗️ Build passando
-- [ ] 📖 Documentação atualizada (se necessário)
-
----
-
-# 📝 Observações adicionais
+## Observações adicionais
 
 <!-- Qualquer informação extra, dúvidas ou detalhes importantes sobre o PR -->
