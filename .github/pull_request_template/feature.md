@@ -1,4 +1,4 @@
-## 📄 Descrição
+# 📄 Descrição
 
 <!-- Descreva brevemente o que foi implementado ou corrigido neste PR -->
 
@@ -26,8 +26,6 @@ Resolves #456
 - [ ] Critério 1
 - [ ] Critério 2
 - [ ] Critério 3
-
----
 
 # 📋 Checklist Técnico
 
