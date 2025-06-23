@@ -1,26 +1,27 @@
-# 📄 Descrição
+## 📄 Descrição
 
 <!-- Descreva brevemente o que foi implementado ou corrigido neste PR -->
 
----
+## 🔗 Issue Relacionada
 
-# 🛠️ Tipo de mudança
+<!-- Informe a issue que este PR resolve -->
+
+Exemplo:  
+Closes #123  
+ou  
+Resolves #456  
+
+> 🔥 Ao usar `Closes #número` ou `Resolves #número`, a issue será fechada automaticamente após o merge.
+
+## 🛠️ Tipo de mudança
 
 - [ ] 🐛 Correção de bug (fix)
 - [ ] ✨ Nova funcionalidade (feature)
-- [ ] 🔨 Refatoração (refactor)
-- [ ] 📚 Documentação (docs)
-- [ ] ⚙️ Outro (especifique):
+- [ ] ♻️ Refatoração (refactor)
+- [ ] 📝 Documentação (docs)
+- [ ] 🔥 Outro (especifique):
 
----
-
-# 🔗 Issue relacionada
-
-<!-- Coloque o número da issue que esse PR resolve, ex: closes #123 -->
-
----
-
-# ✅ Critérios de Aceite
+## ✅ Critérios de Aceite
 
 - [ ] Critério 1
 - [ ] Critério 2
@@ -35,8 +36,6 @@
 - [ ] 🏗️ Build passando
 - [ ] 📖 Documentação atualizada (se necessário)
 
----
-
-# 📝 Observações adicionais
+## 💬 Observações adicionais
 
 <!-- Qualquer informação extra, dúvidas ou detalhes importantes sobre o PR -->
