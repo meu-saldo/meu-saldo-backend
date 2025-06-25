@@ -39,7 +39,7 @@ public class UserServiceTest {
         when(userRepository.save(any(User.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        User user = userService.cadastrarUsuario(dto);
+        User user = userService.registerUser(dto);
 
         assertEquals("Nathan", user.getName());
         assertEquals("nathan@email.com", user.getEmail());
@@ -55,7 +55,7 @@ public class UserServiceTest {
         when(userRepository.existsByEmail(dto.email())).thenReturn(true);
 
         assertThrows(EmailAlreadyExistsException.class, () -> {
-            userService.cadastrarUsuario(dto);
+            userService.registerUser(dto);
         });
 
         verify(userRepository, never()).save(any(User.class));
