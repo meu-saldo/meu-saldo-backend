@@ -7,6 +7,8 @@ import com.nathannolacio.meusaldo.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -18,7 +20,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User cadastrarUsuario(UserRequestDTO dto) {
+    public User registerUser(UserRequestDTO dto) {
         if (userRepository.existsByEmail(dto.email())) {
             throw new EmailAlreadyExistsException();
         }
@@ -29,6 +31,22 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.password()));
 
         return userRepository.save(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void deleteUser(Long id) {
+        if (!userExists(id)) {
+            throw new IllegalArgumentException("Usuário não existe.");
+        }
+
+        userRepository.deleteById(id);
+    }
+
+    private Boolean userExists(Long id) {
+        return userRepository.existsById(id);
     }
 
 }
