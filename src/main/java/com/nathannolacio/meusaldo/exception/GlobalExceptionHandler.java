@@ -1,6 +1,7 @@
 package com.nathannolacio.meusaldo.exception;
 
 import com.nathannolacio.meusaldo.dto.ErrorResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
