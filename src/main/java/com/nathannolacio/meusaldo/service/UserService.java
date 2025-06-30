@@ -2,7 +2,6 @@ package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.UserRequestDTO;
 import com.nathannolacio.meusaldo.exception.EmailAlreadyExistsException;
-import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +18,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(UserRequestDTO dto) {
+    public User cadastrarUsuario(UserRequestDTO dto) {
         if (userRepository.existsByEmail(dto.email())) {
             throw new EmailAlreadyExistsException();
         }
@@ -30,17 +29,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.password()));
 
         return userRepository.save(user);
-    }
-
-    public void deleteUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-
-        userRepository.delete(user);
-    }
-
-    private Boolean userExists(Long id) {
-        return userRepository.existsById(id);
     }
 
 }
