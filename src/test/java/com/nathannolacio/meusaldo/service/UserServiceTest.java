@@ -2,12 +2,15 @@ package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.UserRequestDTO;
 import com.nathannolacio.meusaldo.exception.EmailAlreadyExistsException;
+import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,5 +62,33 @@ public class UserServiceTest {
         });
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void shouldDeleteUserWhenUserExists() {
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.deleteUserById(userId);
+
+        verify(userRepository).findById(userId);
+        verify(userRepository).delete(user);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserDoesNotFound() {
+        Long userId = 2L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> {
+            userService.deleteUserById(userId);
+        });
+
+        verify(userRepository).findById(userId);
+        verify(userRepository, never()).delete(any());
     }
 }
