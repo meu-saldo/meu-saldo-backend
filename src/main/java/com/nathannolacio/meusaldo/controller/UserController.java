@@ -24,6 +24,21 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Lista todos os usuários")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
+    })
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        List<UserResponseDTO> dtos = users.stream()
+                .map(UserResponseDTO::new)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
+    }
+
     @Operation(summary = "Cadastra um novo usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso"),
