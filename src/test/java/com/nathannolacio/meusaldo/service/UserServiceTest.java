@@ -1,6 +1,7 @@
 package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.UserRequestDTO;
+import com.nathannolacio.meusaldo.dto.UserResponseDTO;
 import com.nathannolacio.meusaldo.exception.EmailAlreadyExistsException;
 import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.User;
@@ -10,8 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -90,5 +93,18 @@ public class UserServiceTest {
 
         verify(userRepository).findById(userId);
         verify(userRepository, never()).delete(any());
+    }
+
+    @Test
+    void shouldReturnListOfUserResponseDTOs() {
+        User user1 = new User(1L, "Maria Silva", "maria@example.com", "senha1");
+        User user2 = new User(2L, "João Souza", "joao@example.com", "senha2");
+
+        when(userRepository.findAll()).thenReturn(List.of(user1, user2));
+
+        List<User> result = userService.getAllUsers();
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactly(user1, user2);
     }
 }
