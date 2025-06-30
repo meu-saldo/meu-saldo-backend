@@ -22,6 +22,10 @@ public class Transaction {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @ManyToOne
+    @JoinColumn(name = "id", nullable = false)
+    private User user;
+
     public Transaction() {
     }
 
