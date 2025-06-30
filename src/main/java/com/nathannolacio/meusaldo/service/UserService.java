@@ -7,8 +7,6 @@ import com.nathannolacio.meusaldo.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UserService {
 
@@ -33,11 +31,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         if (!userExists(id)) {
             throw new IllegalArgumentException("Usuário não existe.");
         }
