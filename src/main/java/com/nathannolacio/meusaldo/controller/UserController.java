@@ -4,6 +4,9 @@ import com.nathannolacio.meusaldo.dto.UserRequestDTO;
 import com.nathannolacio.meusaldo.dto.UserResponseDTO;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Cadastra um novo usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "409", description = "Email já cadastrado")
+    })
     @PostMapping
     public ResponseEntity<UserResponseDTO> registerUser(@RequestBody @Valid UserRequestDTO dto) {
         User user = userService.registerUser(dto);
@@ -28,6 +37,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
 
+    @Operation(summary = "Deleta um usuário pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
