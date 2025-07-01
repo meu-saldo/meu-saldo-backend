@@ -2,12 +2,15 @@ package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.UserRequestDTO;
 import com.nathannolacio.meusaldo.exception.EmailAlreadyExistsException;
+import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,7 +42,7 @@ public class UserServiceTest {
         when(userRepository.save(any(User.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        User user = userService.cadastrarUsuario(dto);
+        User user = userService.registerUser(dto);
 
         assertEquals("Nathan", user.getName());
         assertEquals("nathan@email.com", user.getEmail());
@@ -55,9 +58,37 @@ public class UserServiceTest {
         when(userRepository.existsByEmail(dto.email())).thenReturn(true);
 
         assertThrows(EmailAlreadyExistsException.class, () -> {
-            userService.cadastrarUsuario(dto);
+            userService.registerUser(dto);
         });
 
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void shouldDeleteUserWhenUserExists() {
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.deleteUserById(userId);
+
+        verify(userRepository).findById(userId);
+        verify(userRepository).delete(user);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserDoesNotFound() {
+        Long userId = 2L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> {
+            userService.deleteUserById(userId);
+        });
+
+        verify(userRepository).findById(userId);
+        verify(userRepository, never()).delete(any());
     }
 }
