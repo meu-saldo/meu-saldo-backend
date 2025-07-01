@@ -1,3 +1,10 @@
+---
+name: Feature
+about: Template para novas funcionalidades
+title: '[Feature] '
+---
+
+
 # 📄 Descrição
 
 <!-- Descreva brevemente o que foi implementado ou corrigido neste PR -->
