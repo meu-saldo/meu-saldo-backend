@@ -9,7 +9,7 @@
 Exemplo:  
 Closes #123  
 ou  
-Resolves #456  
+Resolves #456
 
 > 🔥 Ao usar `Closes #número` ou `Resolves #número`, a issue será fechada automaticamente após o merge.
 
