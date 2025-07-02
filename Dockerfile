@@ -1,5 +1,5 @@
 # Imagem oficial OpenJDK 23 como base
-FROM eclipse-temurin:23-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /app
 
