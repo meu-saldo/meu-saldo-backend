@@ -84,7 +84,7 @@ public class AuthControllerTest {
 
         ErrorResponse error = (ErrorResponse) response.getBody();
         assertEquals(401, error.status());
-        assertEquals("Credenciais inválidas", error.message());
+        assertEquals("Email e/ou senha inválidos", error.message());
         assertEquals("Unauthorized", error.error());
         assertNotNull(error.timestamp());
     }
