@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -63,7 +62,7 @@ public class AuthController {
             ErrorResponse error = new ErrorResponse(
                     HttpStatus.UNAUTHORIZED.value(),
                     HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                    "Credenciais inválidas",
+                    "Email e/ou senha inválidos",
                     LocalDateTime.now()
             );
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
