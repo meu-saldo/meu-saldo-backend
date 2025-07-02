@@ -1,13 +1,16 @@
-# Etapa 1: build do JAR
+# Etapa 1: Build do JAR
 FROM eclipse-temurin:21-jdk-jammy AS builder
 
 WORKDIR /app
 
 COPY . .
 
+# Dá permissão de execução ao script mvnw
+RUN chmod +x mvnw
+
 RUN ./mvnw clean package -DskipTests
 
-# Etapa 2: imagem final só com o JAR
+# Etapa 2: Imagem final
 FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /app
