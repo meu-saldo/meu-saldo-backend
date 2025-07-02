@@ -16,7 +16,7 @@ public class User  {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Transaction> transactions;
 
     public User() {
