@@ -14,10 +14,15 @@ import java.time.LocalDateTime;
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    public CustomAccessDeniedHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
+    public void handle(HttpServletRequest request,
+                       HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
 
         ErrorResponse error = new ErrorResponse(
@@ -28,7 +33,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         );
 
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setContentType("application/json");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(error));
     }
 
