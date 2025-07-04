@@ -3,6 +3,7 @@ package com.nathannolacio.meusaldo.controller;
 import com.nathannolacio.meusaldo.dto.ErrorResponse;
 import com.nathannolacio.meusaldo.dto.JwtResponse;
 import com.nathannolacio.meusaldo.dto.LoginRequestDTO;
+import com.nathannolacio.meusaldo.security.CustomUserDetails;
 import com.nathannolacio.meusaldo.security.CustomUserDetailsService;
 import com.nathannolacio.meusaldo.security.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,10 +55,10 @@ public class AuthController {
                     )
             );
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String jwt = jwtUtil.generateToken(userDetails);
-            return ResponseEntity.ok(new JwtResponse(jwt));
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            String token = jwtUtil.generateToken(userDetails);
 
+            return ResponseEntity.ok(new JwtResponse(token, userDetails.getRole()));
         } catch (BadCredentialsException e) {
             ErrorResponse error = new ErrorResponse(
                     HttpStatus.UNAUTHORIZED.value(),

@@ -50,4 +50,7 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+    public String getRole() {
+        return user.getRole().name();
+    }
 }
