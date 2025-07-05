@@ -1,10 +1,7 @@
 package com.nathannolacio.meusaldo.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nathannolacio.meusaldo.security.CustomAccessDeniedHandler;
-import com.nathannolacio.meusaldo.security.CustomAuthenticationEntryPoint;
-import com.nathannolacio.meusaldo.security.CustomUserDetailsService;
-import com.nathannolacio.meusaldo.security.JwtAuthenticationFilter;
+import com.nathannolacio.meusaldo.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,15 +29,18 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final OAuth2LoginSuccessHandler successHandler;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomAuthenticationEntryPoint authenticationEntryPoint,
-                          CustomAccessDeniedHandler accessDeniedHandler) {
+                          CustomAccessDeniedHandler accessDeniedHandler,
+                          OAuth2LoginSuccessHandler successHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
+        this.successHandler = successHandler;
     }
 
     @Bean
@@ -64,6 +64,9 @@ public class SecurityConfig {
                         // ⚠️ Catch-all para rotas não mapeadas (permite que 404 seja tratado no DispatcherServlet)
                         .anyRequest().permitAll()
                 )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler)
+                )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
@@ -73,8 +76,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -93,5 +94,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 }

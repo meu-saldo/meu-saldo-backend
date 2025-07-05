@@ -35,6 +35,15 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(secretKey)
+                .compact();
+    }
+
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }

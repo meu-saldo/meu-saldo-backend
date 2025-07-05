@@ -20,6 +20,9 @@ public class User  {
     @Column(nullable = false)
     private Role role = Role.USER;
 
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Transaction> transactions;
 
@@ -71,5 +74,13 @@ public class User  {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
     }
 }
