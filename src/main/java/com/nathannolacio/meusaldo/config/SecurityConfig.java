@@ -49,11 +49,11 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(auth -> auth
                         // Rotas públicas
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/code/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                         // Rotas protegidas
@@ -61,8 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers("/transactions/**").authenticated()
 
-                        // ⚠️ Catch-all para rotas não mapeadas (permite que 404 seja tratado no DispatcherServlet)
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(successHandler)

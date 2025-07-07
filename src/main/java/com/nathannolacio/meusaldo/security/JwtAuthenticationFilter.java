@@ -29,7 +29,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // ⚠️ Libera requisições OPTIONS para CORS funcionar
+        String path = request.getServletPath();
+        if (path.startsWith("/oauth2/") || path.startsWith("/login/oauth2/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;
