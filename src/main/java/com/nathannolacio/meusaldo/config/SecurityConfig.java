@@ -53,7 +53,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         // Rotas públicas
-                        .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/code/**").permitAll()
+                        .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/code/**",
+                                "/ping/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                         // Rotas protegidas
