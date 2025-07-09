@@ -1,11 +1,13 @@
 package com.nathannolacio.meusaldo.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.nathannolacio.meusaldo.dto.ErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -93,6 +95,31 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "Usuário não encontrado",
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> handleInvalidEnum(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof InvalidFormatException) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Tipo de transação inválida. Os valores válidos são: INCOME e EXPENSE");
+        }
+
+        return ResponseEntity
+                .badRequest()
+                .body("Erro na requisição: " + e.getMessage());
+    }
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAccountNotFoundException(AccountNotFoundException e) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Não encontrado",
                 e.getMessage(),
                 LocalDateTime.now()
         );
