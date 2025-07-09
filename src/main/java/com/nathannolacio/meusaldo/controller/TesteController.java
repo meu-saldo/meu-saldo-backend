@@ -24,4 +24,9 @@ public class TesteController {
         return ResponseEntity.ok("Usuário autenticado: " + auth.getName());
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
+    }
+
 }
