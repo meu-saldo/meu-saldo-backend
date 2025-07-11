@@ -2,6 +2,7 @@ package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.TransactionRequestDTO;
 import com.nathannolacio.meusaldo.exception.AccountNotFoundException;
+import com.nathannolacio.meusaldo.exception.TransactionNotFounException;
 import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.Account;
 import com.nathannolacio.meusaldo.model.Transaction;
@@ -43,6 +44,14 @@ public class TransactionService {
         );
 
         return transactionRepository.save(transaction);
+    }
+
+    public void deleteTransaction(Long id) {
+        transactionRepository.findById(id)
+                .ifPresentOrElse(
+                    transactionRepository::delete,
+                    () -> { throw new TransactionNotFounException(); }
+                );
     }
 
 }
