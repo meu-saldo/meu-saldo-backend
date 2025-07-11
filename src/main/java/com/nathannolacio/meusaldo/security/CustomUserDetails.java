@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.nathannolacio.meusaldo.model.User;
 
+import java.sql.SQLOutput;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        System.out.println(">>>> Role do usuário autenticado: " + user.getRole());
         return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
@@ -52,5 +54,9 @@ public class CustomUserDetails implements UserDetails {
 
     public String getRole() {
         return user.getRole().name();
+    }
+
+    public Long getId() {
+        return user.getId();
     }
 }

@@ -1,6 +1,7 @@
 package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.TransactionRequestDTO;
+import com.nathannolacio.meusaldo.dto.TransactionResponseDTO;
 import com.nathannolacio.meusaldo.exception.AccountNotFoundException;
 import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.Account;
@@ -15,8 +16,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -134,6 +138,48 @@ public class TransactionServiceTest {
         verify(accountRepository).findById(accountId);
         verify(userRepository).findById(userId);
         verifyNoInteractions(transactionRepository);
+    }
+
+    @Test
+    void shouldFindAllTransactionsCreated() {
+        LocalDate date = LocalDate.of(2025, 7, 11);
+        User user = new User(1L, "name", "name@email.com", "password");
+        Account account = new Account(1L, "Conta1");
+        TransactionType type = TransactionType.EXPENSE;
+
+        Transaction t1 = new Transaction(1L, date, "Lanche", 15.0, type, account, user);
+        Transaction t2 = new Transaction(2L, date, "Salgadp", 10.0, type, account, user);
+
+        when(transactionRepository.findAll()).thenReturn(Arrays.asList(t1, t2));
+
+        List<TransactionResponseDTO> result = transactionService.findAll();
+
+        assertEquals(2, result.size());
+        assertEquals(t1.getId(), result.get(0).id());
+        assertEquals(t2.getId(), result.get(1).id());
+    }
+
+    @Test
+    void shouldFindAllByUserId() {
+        Long userId = 1L;
+        LocalDate date = LocalDate.of(2025, 7, 11);
+
+        User user1 = new User(1L, "user1", "user1@email.com", "password");
+        User user2 = new User(2L, "user2", "user2@email.com", "password");
+
+        Account account = new Account(1L, "Conta1");
+        TransactionType type = TransactionType.EXPENSE;
+
+        Transaction t1 = new Transaction(1L, date, "Lanche", 100.0, type, account, user1);
+        Transaction t2 = new Transaction(2L, date, "Salgadp", 150.0, type, account, user2);
+
+        when(transactionRepository.findByUserId(userId)).thenReturn(Arrays.asList(t1, t2));
+
+        List<TransactionResponseDTO> result = transactionService.findAllByUserId(userId);
+
+        assertEquals(2, result.size());
+        assertEquals(150.0, result.get(1).amount());
+        verify(transactionRepository, times(1)).findByUserId(userId);
     }
 
 }

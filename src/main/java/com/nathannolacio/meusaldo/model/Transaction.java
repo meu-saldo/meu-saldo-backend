@@ -21,7 +21,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
