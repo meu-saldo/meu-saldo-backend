@@ -34,7 +34,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "204", description = "Nenhuma transação encontrada")
     })
     @GetMapping
-    @PreAuthorize("hasAny   Role('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<TransactionResponseDTO>> getUserTransactions(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
         Long userId = user.getId();
