@@ -77,4 +77,15 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponse);
     }
 
+    @Operation(summary = "Deleta uma transação pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Transação deletada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "ID não encontrado")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

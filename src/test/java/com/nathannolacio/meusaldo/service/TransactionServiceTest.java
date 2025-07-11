@@ -3,6 +3,7 @@ package com.nathannolacio.meusaldo.service;
 import com.nathannolacio.meusaldo.dto.TransactionRequestDTO;
 import com.nathannolacio.meusaldo.dto.TransactionResponseDTO;
 import com.nathannolacio.meusaldo.exception.AccountNotFoundException;
+import com.nathannolacio.meusaldo.exception.TransactionNotFounException;
 import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.Account;
 import com.nathannolacio.meusaldo.model.Transaction;
@@ -138,6 +139,29 @@ public class TransactionServiceTest {
         verify(accountRepository).findById(accountId);
         verify(userRepository).findById(userId);
         verifyNoInteractions(transactionRepository);
+    }
+
+    @Test
+    void shouldDeleteTransactionWhenExists() {
+        Long id = 1L;
+        Transaction transaction = new Transaction();
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(transaction));
+
+        transactionService.deleteTransaction(id);
+
+        verify(transactionRepository).delete(transaction);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTransactionNotFound() {
+        Long id = 1L;
+        when(transactionRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(TransactionNotFounException.class, () -> {
+            transactionService.deleteTransaction(id);
+        });
+
+        verify(transactionRepository, never()).delete(any());
     }
 
     @Test
