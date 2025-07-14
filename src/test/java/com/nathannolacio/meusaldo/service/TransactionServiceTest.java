@@ -3,7 +3,7 @@ package com.nathannolacio.meusaldo.service;
 import com.nathannolacio.meusaldo.dto.TransactionRequestDTO;
 import com.nathannolacio.meusaldo.dto.TransactionResponseDTO;
 import com.nathannolacio.meusaldo.exception.AccountNotFoundException;
-import com.nathannolacio.meusaldo.exception.TransactionNotFounException;
+import com.nathannolacio.meusaldo.exception.TransactionNotFoundException;
 import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.Account;
 import com.nathannolacio.meusaldo.model.Transaction;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -143,22 +142,30 @@ public class TransactionServiceTest {
 
     @Test
     void shouldDeleteTransactionWhenExists() {
-        Long id = 1L;
+        Long transactionId = 1L;
+        Long userId = 10L;
         Transaction transaction = new Transaction();
-        when(transactionRepository.findById(id)).thenReturn(Optional.of(transaction));
 
-        transactionService.deleteTransaction(id);
+        transaction.setId(transactionId);
+
+        when(transactionRepository.findByIdAndUserId(transactionId, userId))
+                .thenReturn(Optional.of(transaction));
+
+        transactionService.deleteTransaction(transactionId, userId);
 
         verify(transactionRepository).delete(transaction);
     }
 
     @Test
     void shouldThrowExceptionWhenTransactionNotFound() {
-        Long id = 1L;
-        when(transactionRepository.findById(id)).thenReturn(Optional.empty());
+        Long transactionId = 1L;
+        Long userId = 1L;
 
-        assertThrows(TransactionNotFounException.class, () -> {
-            transactionService.deleteTransaction(id);
+        when(transactionRepository.findByIdAndUserId(transactionId, userId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(TransactionNotFoundException.class, () -> {
+            transactionService.deleteTransaction(transactionId, userId);
         });
 
         verify(transactionRepository, never()).delete(any());
