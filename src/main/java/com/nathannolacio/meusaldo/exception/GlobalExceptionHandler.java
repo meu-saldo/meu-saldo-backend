@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Hidden
@@ -102,16 +99,25 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleInvalidEnum(HttpMessageNotReadableException e) {
-        if (e.getCause() instanceof InvalidFormatException) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Tipo de transação inválida. Os valores válidos são: INCOME e EXPENSE");
+    public ResponseEntity<?> handleInvalidEnum(HttpMessageNotReadableException e) {
+        Throwable cause = e.getCause();
+
+        if (cause instanceof InvalidFormatException exception) {
+            Class<?> targetType = exception.getTargetType();
+
+            if (targetType.isEnum()) {
+                String validValues = Arrays.stream(targetType.getEnumConstants())
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "));
+
+                String message = String.format("Valor inválido para o campo. Os valores válidos são: %s", validValues);
+                return ResponseEntity.badRequest().body(message);
+            }
         }
 
         return ResponseEntity
                 .badRequest()
-                .body("Erro na requisição: " + e.getMessage());
+                .body("Erro na requisição. Verifique o formato dos dados enviados");
     }
 
     @ExceptionHandler(AccountNotFoundException.class)

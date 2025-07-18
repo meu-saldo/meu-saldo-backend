@@ -26,6 +26,9 @@ public class User  {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Transaction> transactions;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Expense> expenses;
+
     public User() {
     }
 

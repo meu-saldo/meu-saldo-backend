@@ -52,9 +52,12 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // Libera todas as requisições OPTIONS (preflight CORS)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Rotas públicas
                         .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/code/**",
-                                "/ping/**").permitAll()
+                                "/ping/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
 
                         // Rotas protegidas
