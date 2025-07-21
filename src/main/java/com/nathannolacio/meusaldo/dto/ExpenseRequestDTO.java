@@ -12,9 +12,6 @@ public record ExpenseRequestDTO(
         ExpenseType type,
 
         @NotNull(message = "O valor da despesa deve ser preenchido")
-        Double amount,
-
-        @NotNull(message = "O id do usuário deve ser informado")
-        Long userId
+        Double amount
 ) {
 }

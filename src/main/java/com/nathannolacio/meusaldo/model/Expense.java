@@ -61,4 +61,12 @@ public class Expense {
     public void setAmount(Double amount) {
         this.amount = amount;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

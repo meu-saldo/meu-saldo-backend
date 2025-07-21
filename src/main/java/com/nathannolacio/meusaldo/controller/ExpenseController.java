@@ -26,11 +26,8 @@ public class ExpenseController {
 
     @Operation(summary = "Lista todas as despesas do usuário logado")
     @GetMapping
-    public ResponseEntity<List<ExpenseResponseDTO>> getUserExpenses(Authentication authentication) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = user.getId();
-
-        List<ExpenseResponseDTO> expenses = expenseService.findAllByUserId(userId);
+    public ResponseEntity<List<ExpenseResponseDTO>> getUserExpenses() {
+        List<ExpenseResponseDTO> expenses = expenseService.getUserExpenses();
 
         if (expenses == null || expenses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -45,6 +42,22 @@ public class ExpenseController {
         Expense expenseRequest = expenseService.add(dto);
         ExpenseResponseDTO expenseResponse = new ExpenseResponseDTO(expenseRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(expenseResponse);
+    }
+
+    @Operation(summary = "Exclui uma despesa pelo ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        expenseService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "Edita os dados de uma despesa")
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseResponseDTO> edit(@Valid @RequestBody ExpenseRequestDTO dto,
+                                                   @PathVariable Long id) {
+        Expense edited = expenseService.edit(id, dto);
+        ExpenseResponseDTO responseDTO = new ExpenseResponseDTO(edited);
+        return ResponseEntity.ok(responseDTO);
     }
 
 }
