@@ -4,6 +4,8 @@ import com.nathannolacio.meusaldo.model.ExpenseType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
+
 public record ExpenseRequestDTO(
         @NotBlank(message = "A descrição não pode estar vazia")
         String description,
@@ -12,6 +14,6 @@ public record ExpenseRequestDTO(
         ExpenseType type,
 
         @NotNull(message = "O valor da despesa deve ser preenchido")
-        Double amount
+        BigDecimal amount
 ) {
 }

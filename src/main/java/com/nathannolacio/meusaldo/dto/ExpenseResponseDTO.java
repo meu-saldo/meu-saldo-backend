@@ -2,7 +2,9 @@ package com.nathannolacio.meusaldo.dto;
 
 import com.nathannolacio.meusaldo.model.Expense;
 
-public record ExpenseResponseDTO(Long id, String description, ExpenseTypeDTO type, Double amount) {
+import java.math.BigDecimal;
+
+public record ExpenseResponseDTO(Long id, String description, ExpenseTypeDTO type, BigDecimal amount) {
     public ExpenseResponseDTO(Expense expense) {
         this(
                 expense.getId(),

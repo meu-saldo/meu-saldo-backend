@@ -2,6 +2,8 @@ package com.nathannolacio.meusaldo.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "expenses")
 public class Expense {
@@ -15,7 +17,7 @@ public class Expense {
     @Enumerated(EnumType.STRING)
     private ExpenseType type;
 
-    private Double amount;
+    private BigDecimal amount;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -23,7 +25,7 @@ public class Expense {
 
     public Expense() {}
 
-    public Expense(String description, ExpenseType type, Double amount, User user) {
+    public Expense(String description, ExpenseType type, BigDecimal amount, User user) {
         this.description = description;
         this.type = type;
         this.amount = amount;
@@ -54,11 +56,11 @@ public class Expense {
         this.type = type;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

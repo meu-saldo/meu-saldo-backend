@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ExpanseServiceTest {
+public class ExpenseServiceTest {
 
     @InjectMocks
     private ExpenseService expenseService;
@@ -60,9 +60,9 @@ public class ExpanseServiceTest {
 
     @Test
     void shouldReturnListOfUserExpenses() {
-        Expense expense1 = new Expense("Aluguel", ExpenseType.ESSENTIAL,1000.0, null);
+        Expense expense1 = new Expense("Aluguel", ExpenseType.ESSENTIAL,BigDecimal.valueOf(1000.0), null);
         expense1.setId(1L);
-        Expense expense2 = new Expense("Mercado", ExpenseType.ESSENTIAL, 500.0, null);
+        Expense expense2 = new Expense("Mercado", ExpenseType.ESSENTIAL, BigDecimal.valueOf(500.0), null);
         expense2.setId(2L);
 
         when(expenseRepository.findByUserId(userId)).thenReturn(List.of(expense1, expense2));
@@ -76,7 +76,7 @@ public class ExpanseServiceTest {
 
     @Test
     void shouldAddNewExpense() {
-        ExpenseRequestDTO dto = new ExpenseRequestDTO("Netflix", ExpenseType.NOT_ESSENTIAL, 50.0);
+        ExpenseRequestDTO dto = new ExpenseRequestDTO("Netflix", ExpenseType.NOT_ESSENTIAL, BigDecimal.valueOf(50.0));
         User user = new User();
         user.setId(userId);
 
@@ -89,7 +89,7 @@ public class ExpanseServiceTest {
 
         assertEquals("Netflix", result.getDescription());
         assertEquals(ExpenseType.NOT_ESSENTIAL, result.getType());
-        assertEquals(50.0, result.getAmount());
+        assertEquals(BigDecimal.valueOf(50.0), result.getAmount());
         assertEquals(user, result.getUser());
     }
 
@@ -97,7 +97,7 @@ public class ExpanseServiceTest {
     void shouldDeleteUserExpense() {
         Long expenseId = 3L;
 
-        Expense expense = new Expense("Gasolina", ExpenseType.NOT_ESSENTIAL, 200.0, null);
+        Expense expense = new Expense("Gasolina", ExpenseType.NOT_ESSENTIAL, BigDecimal.valueOf(200.0), null);
         expense.setId(expenseId);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
@@ -123,10 +123,10 @@ public class ExpanseServiceTest {
     void shouldEditExpenseSuccessfully() {
         Long expenseId = 5L;
 
-        Expense existing = new Expense("Conta antiga", ExpenseType.ESSENTIAL, 100.0, authenticatedUser);
+        Expense existing = new Expense("Conta antiga", ExpenseType.ESSENTIAL, BigDecimal.valueOf(100.0), authenticatedUser);
         existing.setId(expenseId);
 
-        ExpenseRequestDTO dto = new ExpenseRequestDTO("Conta nova", ExpenseType.ESSENTIAL, 150.0);
+        ExpenseRequestDTO dto = new ExpenseRequestDTO("Conta nova", ExpenseType.ESSENTIAL, BigDecimal.valueOf(150.0));
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
         when(expenseRepository.findByIdAndUserId(expenseId, userId)).thenReturn(Optional.of(existing));
@@ -137,7 +137,7 @@ public class ExpanseServiceTest {
 
         assertEquals("Conta nova", updated.getDescription());
         assertEquals(ExpenseType.ESSENTIAL, updated.getType());
-        assertEquals(150.0, updated.getAmount());
+        assertEquals(BigDecimal.valueOf(150.0), updated.getAmount());
         verify(expenseRepository).save(existing);
     }
 
@@ -145,7 +145,7 @@ public class ExpanseServiceTest {
     void shouldThrowWhenEditingNonexistentExpense() {
         Long nonExistingExpenseId = 10L;
 
-        ExpenseRequestDTO dto = new ExpenseRequestDTO("Luz", ExpenseType.ESSENTIAL, 300.0);
+        ExpenseRequestDTO dto = new ExpenseRequestDTO("Luz", ExpenseType.ESSENTIAL, BigDecimal.valueOf(300.0));
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
         when(expenseRepository.findByIdAndUserId(nonExistingExpenseId, userId)).thenReturn(Optional.empty());
