@@ -2,6 +2,7 @@ package com.nathannolacio.meusaldo.service;
 
 import com.nathannolacio.meusaldo.dto.ExpenseRequestDTO;
 import com.nathannolacio.meusaldo.dto.ExpenseResponseDTO;
+import com.nathannolacio.meusaldo.exception.ExpenseAlreadyExistsException;
 import com.nathannolacio.meusaldo.exception.ExpenseNotFoundException;
 import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.Expense;
@@ -35,10 +36,9 @@ public class ExpenseService {
     }
 
     public Expense add(ExpenseRequestDTO dto) {
-        Long userId = AuthUtils.getAuthenticatedUserId();
+        User user = getAuthenticatedUser();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        validateDuplicateDescription(dto.description(), user);
 
         Expense expense = new Expense(
                 dto.description(),
@@ -51,19 +51,21 @@ public class ExpenseService {
     }
 
     public void delete(Long id) {
-        Long userId = AuthUtils.getAuthenticatedUserId();
+        User user = getAuthenticatedUser();
 
-        Expense expense = expenseRepository.findByIdAndUserId(id, userId)
+        Expense expense = expenseRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(ExpenseNotFoundException::new);
 
         expenseRepository.delete(expense);
     }
 
     public Expense edit(Long id, ExpenseRequestDTO dto) {
-        Long userId = AuthUtils.getAuthenticatedUserId();
+        User user = getAuthenticatedUser();
 
-        Expense expense = expenseRepository.findByIdAndUserId(id, userId)
+        Expense expense = expenseRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(ExpenseNotFoundException::new);
+
+        validateDuplicateDescription(dto.description(), user, id);
 
         expense.setDescription(dto.description());
         expense.setType(dto.type());
@@ -72,5 +74,25 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
+    private User getAuthenticatedUser() {
+        Long userId = AuthUtils.getAuthenticatedUserId();
+
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    private void validateDuplicateDescription(String description, User user) {
+        boolean alreadyExists = expenseRepository.existsByDescriptionAndUser(description, user);
+
+        if (alreadyExists) {
+            throw new ExpenseAlreadyExistsException();
+        }
+    }
+
+    private void validateDuplicateDescription(String description, User user, Long expenseToIgnore) {
+        if (expenseRepository.existsByDescriptionAndUserAndIdNot(description, user, expenseToIgnore)) {
+            throw new ExpenseAlreadyExistsException();
+        }
+    }
 
 }

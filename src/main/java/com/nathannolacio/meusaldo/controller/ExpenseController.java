@@ -3,13 +3,13 @@ package com.nathannolacio.meusaldo.controller;
 import com.nathannolacio.meusaldo.dto.ExpenseRequestDTO;
 import com.nathannolacio.meusaldo.dto.ExpenseResponseDTO;
 import com.nathannolacio.meusaldo.model.Expense;
-import com.nathannolacio.meusaldo.security.CustomUserDetails;
 import com.nathannolacio.meusaldo.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +25,9 @@ public class ExpenseController {
     }
 
     @Operation(summary = "Lista todas as despesas do usuário logado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
+    })
     @GetMapping
     public ResponseEntity<List<ExpenseResponseDTO>> getUserExpenses() {
         List<ExpenseResponseDTO> expenses = expenseService.getUserExpenses();
@@ -37,6 +40,12 @@ public class ExpenseController {
     }
 
     @Operation(summary = "Adiciona uma nova despesa")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "404", description = "Despesa não encontrada"),
+            @ApiResponse(responseCode = "409", description = "Despesa já cadastrada")
+    })
     @PostMapping
     public ResponseEntity<ExpenseResponseDTO> add(@Valid @RequestBody ExpenseRequestDTO dto) {
         Expense expenseRequest = expenseService.add(dto);
@@ -52,6 +61,12 @@ public class ExpenseController {
     }
 
     @Operation(summary = "Edita os dados de uma despesa")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "404", description = "Despesa não encontrada"),
+            @ApiResponse(responseCode = "409", description = "Despesa já existe")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<ExpenseResponseDTO> edit(@Valid @RequestBody ExpenseRequestDTO dto,
                                                    @PathVariable Long id) {

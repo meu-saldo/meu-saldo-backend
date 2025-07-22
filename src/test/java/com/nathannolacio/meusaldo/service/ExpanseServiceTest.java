@@ -26,8 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ExpanseServiceTest {
@@ -42,13 +41,16 @@ public class ExpanseServiceTest {
     private UserRepository userRepository;
 
     private MockedStatic<AuthUtils> authUtils;
-
     private final Long userId = 1L;
+    private User authenticatedUser;
 
     @BeforeEach
     void setup() {
         authUtils = Mockito.mockStatic(AuthUtils.class);
         authUtils.when(AuthUtils::getAuthenticatedUserId).thenReturn(1L);
+
+        authenticatedUser = new User();
+        authenticatedUser.setId(userId);
     }
 
     @AfterEach
@@ -93,47 +95,64 @@ public class ExpanseServiceTest {
 
     @Test
     void shouldDeleteUserExpense() {
+        Long expenseId = 3L;
+
         Expense expense = new Expense("Gasolina", ExpenseType.NOT_ESSENTIAL, 200.0, null);
-        expense.setId(3L);
+        expense.setId(expenseId);
 
-        when(expenseRepository.findByIdAndUserId(3L, userId)).thenReturn(Optional.of(expense));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
+        when(expenseRepository.findByIdAndUserId(expenseId, userId)).thenReturn(Optional.of(expense));
+        doNothing().when(expenseRepository).delete(expense);
 
-        expenseService.delete(3L);
+        expenseService.delete(expenseId);
 
         verify(expenseRepository).delete(expense);
     }
 
     @Test
     void shouldThrowWhenDeletingNonexistentExpense() {
-        when(expenseRepository.findByIdAndUserId(99L, userId)).thenReturn(Optional.empty());
+        Long nonExistingExpenseId = 99L;
 
-        assertThrows(ExpenseNotFoundException.class, () -> expenseService.delete(99L));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
+        when(expenseRepository.findByIdAndUserId(nonExistingExpenseId, userId)).thenReturn(Optional.empty());
+
+        assertThrows(ExpenseNotFoundException.class, () -> expenseService.delete(nonExistingExpenseId));
     }
 
     @Test
     void shouldEditExpenseSuccessfully() {
-        Expense existing = new Expense("Conta antiga", ExpenseType.ESSENTIAL, 100.0, null);
-        existing.setId(5L);
+        Long expenseId = 5L;
+
+        Expense existing = new Expense("Conta antiga", ExpenseType.ESSENTIAL, 100.0, authenticatedUser);
+        existing.setId(expenseId);
 
         ExpenseRequestDTO dto = new ExpenseRequestDTO("Conta nova", ExpenseType.ESSENTIAL, 150.0);
 
-        when(expenseRepository.findByIdAndUserId(5L, userId)).thenReturn(Optional.of(existing));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
+        when(expenseRepository.findByIdAndUserId(expenseId, userId)).thenReturn(Optional.of(existing));
+        when(expenseRepository.existsByDescriptionAndUserAndIdNot(dto.description(), authenticatedUser, expenseId)).thenReturn(false);
         when(expenseRepository.save(any(Expense.class))).thenAnswer(i -> i.getArgument(0));
 
-        Expense updated = expenseService.edit(5L, dto);
+        Expense updated = expenseService.edit(expenseId, dto);
 
         assertEquals("Conta nova", updated.getDescription());
         assertEquals(ExpenseType.ESSENTIAL, updated.getType());
         assertEquals(150.0, updated.getAmount());
+        verify(expenseRepository).save(existing);
     }
 
     @Test
     void shouldThrowWhenEditingNonexistentExpense() {
+        Long nonExistingExpenseId = 10L;
+
         ExpenseRequestDTO dto = new ExpenseRequestDTO("Luz", ExpenseType.ESSENTIAL, 300.0);
 
-        when(expenseRepository.findByIdAndUserId(10L, userId)).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.of(authenticatedUser));
+        when(expenseRepository.findByIdAndUserId(nonExistingExpenseId, userId)).thenReturn(Optional.empty());
 
         assertThrows(ExpenseNotFoundException.class, () -> expenseService.edit(10L, dto));
+
+        verify(expenseRepository, never()).save(any());
     }
 
 }
