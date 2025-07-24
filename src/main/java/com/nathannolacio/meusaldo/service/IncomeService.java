@@ -3,6 +3,7 @@ package com.nathannolacio.meusaldo.service;
 import com.nathannolacio.meusaldo.dto.IncomeRequestDTO;
 import com.nathannolacio.meusaldo.dto.IncomeResponseDTO;
 import com.nathannolacio.meusaldo.exception.IncomeAlreadyExistsException;
+import com.nathannolacio.meusaldo.exception.IncomeNotFoundException;
 import com.nathannolacio.meusaldo.model.Income;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.repository.IncomeRepository;
@@ -46,6 +47,15 @@ public class IncomeService {
         );
 
         return incomeRepository.save(income);
+    }
+
+    public void delete(Long id) {
+        User user = authUtils.getAuthenticatedUser();
+
+        Income income = incomeRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(IncomeNotFoundException::new);
+
+        incomeRepository.delete(income);
     }
 
     private void validateDuplicateDescription(String description, User user) {

@@ -52,4 +52,16 @@ public class IncomeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(incomeReponse);
     }
 
+    @Operation(summary = "Exclui uma despesa pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "404", description = "Entrada não encontrada"),
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        incomeService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
