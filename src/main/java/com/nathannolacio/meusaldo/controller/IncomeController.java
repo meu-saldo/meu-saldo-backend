@@ -64,4 +64,18 @@ public class IncomeController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(summary = "Edita os dados de uma entrada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "404", description = "Entrada não encontrada"),
+            @ApiResponse(responseCode = "409", description = "Entrada já existe")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<IncomeResponseDTO> edit(@PathVariable Long id, @Valid @RequestBody IncomeRequestDTO dto) {
+        Income incomeEdited = incomeService.edit(id, dto);
+        IncomeResponseDTO incomeResponse = new IncomeResponseDTO(incomeEdited);
+        return ResponseEntity.ok(incomeResponse);
+    }
+
 }

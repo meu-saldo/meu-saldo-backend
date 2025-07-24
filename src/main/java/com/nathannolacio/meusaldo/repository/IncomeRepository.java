@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface IncomeRepository extends JpaRepository<Income, Long> {
     List<Income> findByUserId(Long userId);
-    boolean existsByDescriptionAndUser(String description, User user);
+    boolean existsByDescriptionAndUserId(String description, Long userId);
     Optional<Income> findByIdAndUserId(Long id, Long userId);
+    boolean existsByDescriptionAndUserIdAndIdNot(String description, Long userId, Long incomeId);
 }

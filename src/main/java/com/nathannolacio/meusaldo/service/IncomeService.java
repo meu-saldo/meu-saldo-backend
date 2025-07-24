@@ -38,7 +38,7 @@ public class IncomeService {
     public Income add(IncomeRequestDTO dto) {
         User user = authUtils.getAuthenticatedUser();
 
-        validateDuplicateDescription(dto.description(), user);
+        validateDuplicateDescription(dto.description(), user.getId());
 
         Income income = new Income(
                 dto.description(),
@@ -50,18 +50,38 @@ public class IncomeService {
     }
 
     public void delete(Long id) {
-        User user = authUtils.getAuthenticatedUser();
+        Long userId = authUtils.getAuthenticatedUserId();
 
-        Income income = incomeRepository.findByIdAndUserId(id, user.getId())
+        Income income = incomeRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(IncomeNotFoundException::new);
 
         incomeRepository.delete(income);
     }
 
-    private void validateDuplicateDescription(String description, User user) {
-        boolean alreadyExists = incomeRepository.existsByDescriptionAndUser(description, user);
+    public Income edit(Long id, IncomeRequestDTO dto) {
+        Long userId = authUtils.getAuthenticatedUserId();
+
+        Income income = incomeRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(IncomeNotFoundException::new);
+
+        validateDuplicateDescription(dto.description(), userId, id);
+
+        income.setDescription(dto.description());
+        income.setAmount(dto.amount());
+
+        return incomeRepository.save(income);
+    }
+
+    private void validateDuplicateDescription(String description, Long userId) {
+        boolean alreadyExists = incomeRepository.existsByDescriptionAndUserId(description, userId);
 
         if (alreadyExists) {
+            throw new IncomeAlreadyExistsException();
+        }
+    }
+
+    private void validateDuplicateDescription(String description, Long userId, Long incomeId) {
+        if (incomeRepository.existsByDescriptionAndUserIdAndIdNot(description, userId, incomeId)) {
             throw new IncomeAlreadyExistsException();
         }
     }
