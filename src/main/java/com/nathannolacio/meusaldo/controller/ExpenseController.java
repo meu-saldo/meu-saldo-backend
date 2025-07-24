@@ -43,8 +43,7 @@ public class ExpenseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "400", description = "Dados inválidos"),
             @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
-            @ApiResponse(responseCode = "404", description = "Despesa não encontrada"),
-            @ApiResponse(responseCode = "409", description = "Despesa já cadastrada")
+            @ApiResponse(responseCode = "409", description = "Despesa já cadastradas")
     })
     @PostMapping
     public ResponseEntity<ExpenseResponseDTO> add(@Valid @RequestBody ExpenseRequestDTO dto) {

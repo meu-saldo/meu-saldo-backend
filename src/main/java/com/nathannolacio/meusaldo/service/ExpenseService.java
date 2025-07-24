@@ -4,11 +4,9 @@ import com.nathannolacio.meusaldo.dto.ExpenseRequestDTO;
 import com.nathannolacio.meusaldo.dto.ExpenseResponseDTO;
 import com.nathannolacio.meusaldo.exception.ExpenseAlreadyExistsException;
 import com.nathannolacio.meusaldo.exception.ExpenseNotFoundException;
-import com.nathannolacio.meusaldo.exception.UserNotFoundException;
 import com.nathannolacio.meusaldo.model.Expense;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.repository.ExpenseRepository;
-import com.nathannolacio.meusaldo.repository.UserRepository;
 import com.nathannolacio.meusaldo.util.AuthUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +17,16 @@ import java.util.stream.Collectors;
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
-    private final UserRepository userRepository;
+    private final AuthUtils authUtils;
 
-    public ExpenseService(ExpenseRepository expenseRepository, UserRepository userRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository,
+                          AuthUtils authUtils) {
         this.expenseRepository = expenseRepository;
-        this.userRepository = userRepository;
+        this.authUtils = authUtils;
     }
 
     public List<ExpenseResponseDTO> getUserExpenses() {
-        Long userId = AuthUtils.getAuthenticatedUserId();
+        Long userId = authUtils.getAuthenticatedUserId();
 
         return expenseRepository.findByUserId(userId)
                 .stream()
@@ -36,7 +35,7 @@ public class ExpenseService {
     }
 
     public Expense add(ExpenseRequestDTO dto) {
-        User user = getAuthenticatedUser();
+        User user = authUtils.getAuthenticatedUser();
 
         validateDuplicateDescription(dto.description(), user);
 
@@ -51,7 +50,7 @@ public class ExpenseService {
     }
 
     public void delete(Long id) {
-        User user = getAuthenticatedUser();
+        User user = authUtils.getAuthenticatedUser();
 
         Expense expense = expenseRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(ExpenseNotFoundException::new);
@@ -60,7 +59,7 @@ public class ExpenseService {
     }
 
     public Expense edit(Long id, ExpenseRequestDTO dto) {
-        User user = getAuthenticatedUser();
+        User user = authUtils.getAuthenticatedUser();
 
         Expense expense = expenseRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(ExpenseNotFoundException::new);
@@ -74,12 +73,6 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
-    private User getAuthenticatedUser() {
-        Long userId = AuthUtils.getAuthenticatedUserId();
-
-        return userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-    }
 
     private void validateDuplicateDescription(String description, User user) {
         boolean alreadyExists = expenseRepository.existsByDescriptionAndUser(description, user);
