@@ -24,8 +24,6 @@ public record TransactionRequestDTO(
         TransactionType type,
 
         @NotNull(message = "É necessário passar o id da conta")
-        Long accountId,
-
-        Long userId
+        Long accountId
         ) {
 }

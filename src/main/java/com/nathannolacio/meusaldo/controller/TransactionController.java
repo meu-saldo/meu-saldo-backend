@@ -70,8 +70,7 @@ public class TransactionController {
     )
     @PostMapping
     public ResponseEntity<TransactionResponseDTO> createTransaction(@Valid @RequestBody TransactionRequestDTO dto) {
-        Transaction transactionRequest = transactionService.createTransaction(dto);
-        TransactionResponseDTO transactionResponse = new TransactionResponseDTO(transactionRequest);
+        TransactionResponseDTO transactionResponse = transactionService.createTransaction(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponse);
     }
 
@@ -81,14 +80,8 @@ public class TransactionController {
             @ApiResponse(responseCode = "404", description = "ID não encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(
-            @PathVariable Long id,
-            Authentication authentication) {
-
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = user.getId();
-
-        transactionService.deleteTransaction(id, userId);
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

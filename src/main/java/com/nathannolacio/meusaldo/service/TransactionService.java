@@ -22,16 +22,13 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
-    private final UserRepository userRepository;
     private final AuthUtils authUtils;
 
     public TransactionService(TransactionRepository transactionRepository,
                               AccountRepository accountRepository,
-                              UserRepository userRepository,
                               AuthUtils authUtils) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
-        this.userRepository = userRepository;
         this.authUtils = authUtils;
     }
 
@@ -51,12 +48,11 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public Transaction createTransaction(TransactionRequestDTO dto) {
+    public TransactionResponseDTO createTransaction(TransactionRequestDTO dto) {
+        Long userId = authUtils.getAuthenticatedUserId();
+
         Account account = accountRepository.findById(dto.accountId())
                 .orElseThrow(AccountNotFoundException::new);
-
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(UserNotFoundException::new);
 
         Transaction transaction = new Transaction(
                 dto.date(),
@@ -66,10 +62,14 @@ public class TransactionService {
                 account
         );
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        return new TransactionResponseDTO(savedTransaction);
     }
 
-    public void deleteTransaction(Long transactionId, Long userId) {
+    public void deleteTransaction(Long transactionId) {
+        Long userId = authUtils.getAuthenticatedUserId();
+
         Transaction transaction = transactionRepository.findByIdAndAccount_User_Id(transactionId, userId)
                 .orElseThrow(TransactionNotFoundException::new);
 
