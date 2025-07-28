@@ -12,7 +12,6 @@ import com.nathannolacio.meusaldo.repository.AccountRepository;
 import com.nathannolacio.meusaldo.repository.TransactionRepository;
 import com.nathannolacio.meusaldo.repository.UserRepository;
 import com.nathannolacio.meusaldo.util.AuthUtils;
-import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForDate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,8 +42,10 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public List<TransactionResponseDTO> findAllByUserId(Long id) {
-        return transactionRepository.findByUserId(id)
+    public List<TransactionResponseDTO> findAllByUserId() {
+        Long userId = authUtils.getAuthenticatedUserId();
+
+        return transactionRepository.findByAccount_User_Id(userId)
                 .stream()
                 .map(TransactionResponseDTO::new)
                 .collect(Collectors.toList());
@@ -62,15 +63,14 @@ public class TransactionService {
                 dto.description(),
                 dto.amount(),
                 dto.type(),
-                account,
-                user
+                account
         );
 
         return transactionRepository.save(transaction);
     }
 
     public void deleteTransaction(Long transactionId, Long userId) {
-        Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId)
+        Transaction transaction = transactionRepository.findByIdAndAccount_User_Id(transactionId, userId)
                 .orElseThrow(TransactionNotFoundException::new);
 
         transactionRepository.delete(transaction);
@@ -82,7 +82,7 @@ public class TransactionService {
         Account account = accountRepository.findById(dto.accountId())
                 .orElseThrow(AccountNotFoundException::new);
 
-        Transaction transaction = transactionRepository.findByIdAndUserId(id, userId)
+        Transaction transaction = transactionRepository.findByIdAndAccount_User_Id(id, userId)
                 .orElseThrow(TransactionNotFoundException::new);
 
         transaction.setDescription(dto.description());

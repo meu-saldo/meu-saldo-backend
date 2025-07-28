@@ -22,12 +22,8 @@ public class Transaction {
     private TransactionType type;
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     public Transaction() {
     }
@@ -39,16 +35,14 @@ public class Transaction {
         this.amount = amount;
         this.type = type;
         this.account = account;
-        this.user = user;
     }
 
-    public Transaction(LocalDate date, String description, Double amount, TransactionType type, Account account, User user) {
+    public Transaction(LocalDate date, String description, Double amount, TransactionType type, Account account) {
         this.date = date;
         this.description = description;
         this.amount = amount;
         this.type = type;
         this.account = account;
-        this.user = user;
     }
 
     public Long getId() {
@@ -89,14 +83,6 @@ public class Transaction {
 
     public void setAccount(Account account) {
         this.account = account;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public TransactionType getType() {

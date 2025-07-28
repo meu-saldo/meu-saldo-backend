@@ -24,10 +24,13 @@ public class User  {
     private AuthProvider authProvider;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Transaction> transactions;
+    private List<Expense> expenses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Expense> expenses;
+    private List<Income> incomes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Account> accounts;
 
     public User() {
     }

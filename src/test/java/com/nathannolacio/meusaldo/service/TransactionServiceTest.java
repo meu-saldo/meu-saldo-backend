@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -68,8 +69,7 @@ public class TransactionServiceTest {
                 dto.description(),
                 dto.amount(),
                 dto.type(),
-                fakeAccount,
-                fakeUser
+                fakeAccount
         );
 
         when(accountRepository.findById(accountId)).thenReturn(Optional.of(fakeAccount));
@@ -84,7 +84,7 @@ public class TransactionServiceTest {
         assertEquals(dto.amount(), result.getAmount());
         assertEquals(dto.type(), result.getType());
         assertEquals(fakeAccount, result.getAccount());
-        assertEquals(fakeUser, result.getUser());
+//        assertEquals(fakeUser, result.getUser());
 
         verify(transactionRepository).save(any(Transaction.class));
     }
@@ -148,7 +148,7 @@ public class TransactionServiceTest {
 
         transaction.setId(transactionId);
 
-        when(transactionRepository.findByIdAndUserId(transactionId, userId))
+        when(transactionRepository.findByIdAndAccount_User_Id(transactionId, userId))
                 .thenReturn(Optional.of(transaction));
 
         transactionService.deleteTransaction(transactionId, userId);
@@ -161,7 +161,7 @@ public class TransactionServiceTest {
         Long transactionId = 1L;
         Long userId = 1L;
 
-        when(transactionRepository.findByIdAndUserId(transactionId, userId))
+        when(transactionRepository.findByIdAndAccount_User_Id(transactionId, userId))
                 .thenReturn(Optional.empty());
 
         assertThrows(TransactionNotFoundException.class, () -> {
@@ -175,7 +175,7 @@ public class TransactionServiceTest {
     void shouldFindAllTransactionsCreated() {
         LocalDate date = LocalDate.of(2025, 7, 11);
         User user = new User(1L, "name", "name@email.com", "password");
-        Account account = new Account(1L, "Conta1");
+        Account account = new Account("Conta1" ,"", BigDecimal.valueOf(0), user);
         TransactionType type = TransactionType.EXPENSE;
 
         Transaction t1 = new Transaction(1L, date, "Lanche", 15.0, type, account, user);
@@ -198,19 +198,19 @@ public class TransactionServiceTest {
         User user1 = new User(1L, "user1", "user1@email.com", "password");
         User user2 = new User(2L, "user2", "user2@email.com", "password");
 
-        Account account = new Account(1L, "Conta1");
+        Account account = new Account("Conta1", "", BigDecimal.valueOf(0), user1);
         TransactionType type = TransactionType.EXPENSE;
 
         Transaction t1 = new Transaction(1L, date, "Lanche", 100.0, type, account, user1);
         Transaction t2 = new Transaction(2L, date, "Salgadp", 150.0, type, account, user2);
 
-        when(transactionRepository.findByUserId(userId)).thenReturn(Arrays.asList(t1, t2));
+        when(transactionRepository.findByAccount_User_Id(userId)).thenReturn(Arrays.asList(t1, t2));
 
-        List<TransactionResponseDTO> result = transactionService.findAllByUserId(userId);
+        List<TransactionResponseDTO> result = transactionService.findAllByUserId();
 
         assertEquals(2, result.size());
         assertEquals(150.0, result.get(1).amount());
-        verify(transactionRepository, times(1)).findByUserId(userId);
+        verify(transactionRepository, times(1)).findByAccount_User_Id(userId);
     }
 
 }

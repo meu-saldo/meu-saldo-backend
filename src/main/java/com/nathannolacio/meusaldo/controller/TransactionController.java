@@ -35,11 +35,8 @@ public class TransactionController {
     })
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<List<TransactionResponseDTO>> getUserTransactions(Authentication authentication) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = user.getId();
-
-        List<TransactionResponseDTO> transactions = transactionService.findAllByUserId(userId);
+    public ResponseEntity<List<TransactionResponseDTO>> getUserTransactions() {
+        List<TransactionResponseDTO> transactions = transactionService.findAllByUserId();
 
         if (transactions == null || transactions.isEmpty()) {
             return ResponseEntity.noContent().build();
