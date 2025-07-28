@@ -47,9 +47,8 @@ public class IncomeController {
     })
     @PostMapping
     public ResponseEntity<IncomeResponseDTO> add(@Valid @RequestBody IncomeRequestDTO dto) {
-        Income incomeRequest = incomeService.add(dto);
-        IncomeResponseDTO incomeReponse = new IncomeResponseDTO(incomeRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(incomeReponse);
+        IncomeResponseDTO income = incomeService.add(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(income);
     }
 
     @Operation(summary = "Exclui uma despesa pelo ID")

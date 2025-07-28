@@ -35,7 +35,7 @@ public class IncomeService {
                 .collect(Collectors.toList());
     }
 
-    public Income add(IncomeRequestDTO dto) {
+    public IncomeResponseDTO add(IncomeRequestDTO dto) {
         User user = authUtils.getAuthenticatedUser();
 
         validateDuplicateDescription(dto.description(), user.getId());
@@ -46,7 +46,9 @@ public class IncomeService {
                 user
         );
 
-        return incomeRepository.save(income);
+        Income savedIncome = incomeRepository.save(income);
+
+        return new IncomeResponseDTO(savedIncome);
     }
 
     public void delete(Long id) {
