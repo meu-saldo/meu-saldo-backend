@@ -72,8 +72,7 @@ public class IncomeController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<IncomeResponseDTO> edit(@PathVariable Long id, @Valid @RequestBody IncomeRequestDTO dto) {
-        Income incomeEdited = incomeService.edit(id, dto);
-        IncomeResponseDTO incomeResponse = new IncomeResponseDTO(incomeEdited);
+        IncomeResponseDTO incomeResponse = incomeService.edit(id, dto);
         return ResponseEntity.ok(incomeResponse);
     }
 

@@ -60,18 +60,24 @@ public class IncomeService {
         incomeRepository.delete(income);
     }
 
-    public Income edit(Long id, IncomeRequestDTO dto) {
+    public IncomeResponseDTO edit(Long id, IncomeRequestDTO dto) {
         Long userId = authUtils.getAuthenticatedUserId();
 
         Income income = incomeRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(IncomeNotFoundException::new);
 
-        validateDuplicateDescription(dto.description(), userId, id);
+        boolean descriptionChanged = !income.getDescription().equalsIgnoreCase(dto.description());
 
+        if (descriptionChanged) {
+            validateDuplicateDescription(dto.description(), userId, id);
+        }
+        
         income.setDescription(dto.description());
         income.setAmount(dto.amount());
 
-        return incomeRepository.save(income);
+        Income updatedIncome = incomeRepository.save(income);
+
+        return new IncomeResponseDTO(updatedIncome);
     }
 
     private void validateDuplicateDescription(String description, Long userId) {
