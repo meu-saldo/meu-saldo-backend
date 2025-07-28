@@ -2,6 +2,7 @@ package com.nathannolacio.meusaldo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nathannolacio.meusaldo.model.TransactionType;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,6 +16,7 @@ public record TransactionRequestDTO(
         @NotBlank(message = "Descrição não pode estar vazia")
         String description,
 
+        @DecimalMin(value = "0.01")
         @NotNull(message = "O campo valor não pode estar vazio")
         Double amount,
 
@@ -24,7 +26,6 @@ public record TransactionRequestDTO(
         @NotNull(message = "É necessário passar o id da conta")
         Long accountId,
 
-        @NotNull(message = "É necessário passar o id do usuário")
         Long userId
         ) {
 }

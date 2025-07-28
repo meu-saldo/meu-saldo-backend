@@ -95,4 +95,18 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Operation(summary = "Atualiza uma transação")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transação atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Transação não encontrada")
+        }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionResponseDTO> editTransaction(@PathVariable Long id, @Valid @RequestBody TransactionRequestDTO dto) {
+        TransactionResponseDTO transactionResponse = transactionService.editTransaction(id, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(transactionResponse);
+    }
+
+
 }
