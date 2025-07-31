@@ -3,6 +3,7 @@ package com.nathannolacio.meusaldo.service;
 import com.nathannolacio.meusaldo.dto.AccountRequestDTO;
 import com.nathannolacio.meusaldo.dto.AccountResponseDTO;
 import com.nathannolacio.meusaldo.exception.AccountAlreadyExistsException;
+import com.nathannolacio.meusaldo.exception.AccountNotFoundException;
 import com.nathannolacio.meusaldo.model.Account;
 import com.nathannolacio.meusaldo.model.User;
 import com.nathannolacio.meusaldo.repository.AccountRepository;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -52,8 +52,19 @@ public class AccountService {
 
         return accountRepository.findByUserId(userId)
                 .stream()
+                .filter(Account::isActive)
                 .map(AccountResponseDTO::new)
                 .toList();
+    }
+
+    public void deactiveAccount(Long accountId) {
+        Long userId = authUtils.getAuthenticatedUserId();
+
+        Account account = accountRepository.findById(accountId).
+                orElseThrow(AccountNotFoundException::new);
+
+        account.setActive(false);
+        accountRepository.save(account);
     }
 
 }

@@ -17,6 +17,7 @@ public class Account {
     private String name;
     private String description;
     private BigDecimal balance;
+    private boolean active = true;
 
     @OneToMany(mappedBy = "account")
     private List<Transaction> transactions;
@@ -81,5 +82,13 @@ public class Account {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

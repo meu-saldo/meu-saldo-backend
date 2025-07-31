@@ -55,4 +55,16 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
+    @Operation(summary = "Deleta uma conta pelo Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Conta removida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Conta não encontrada"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deactiveAccount(@PathVariable Long id) {
+        accountService.deactiveAccount(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
