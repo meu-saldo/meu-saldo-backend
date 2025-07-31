@@ -16,7 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -94,6 +97,52 @@ public class AccountServiceTest {
 
         verify(authUtils, times(1)).getAuthenticatedUser();
         verify(accountRepository, times(1)).existsByNameAndUserId(accountRequestDTO.name(), testUser.getId());
+    }
+
+    @Test
+    @DisplayName("Deve retornar uma lista de DTOs de conta quando o usuário possui contas")
+    void getAllAccounts_whenUserHasAccounts_shouldReturnAccountDTOList() {
+        Long mockUserId = 1L;
+        User mockUser = new User();
+
+        mockUser.setId(mockUserId);
+        mockUser.setName("testuser");
+
+        Account account1 = new Account(101L, "Conta1", "Descrição", BigDecimal.ZERO, mockUser);
+        Account account2 = new Account(102L, "Conta2", "Descrição", BigDecimal.ZERO, mockUser);
+        List<Account> accountsFromRepo = List.of(account1, account2);
+
+        when(authUtils.getAuthenticatedUserId()).thenReturn(mockUserId);
+        when(accountRepository.findByUserId(mockUserId)).thenReturn(accountsFromRepo);
+
+        List<AccountResponseDTO> result = accountService.getAllAccounts();
+
+
+        assertThat(result.get(0).id()).isEqualTo(account1.getId());
+        assertThat(result.get(0).name()).isEqualTo(account1.getName());
+
+        assertThat(result.get(1).id()).isEqualTo(account2.getId());
+        assertThat(result.get(1).name()).isEqualTo(account2.getName());
+
+        verify(authUtils, times(1)).getAuthenticatedUserId();
+        verify(accountRepository, times(1)).findByUserId(mockUserId);
+    }
+
+    @Test
+    @DisplayName("Deve retornar uma lista vazia quando o usuário não possui contas")
+    void getAllAccounts_whenUserHasNoAccounts_shouldReturnEmptyList() {
+        Long mockUserId = 2L;
+
+        when(authUtils.getAuthenticatedUserId()).thenReturn(mockUserId);
+        when(accountRepository.findByUserId(mockUserId)).thenReturn(Collections.emptyList());
+
+        List<AccountResponseDTO> result = accountService.getAllAccounts();
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEmpty();
+
+        verify(authUtils, times(1)).getAuthenticatedUserId();
+        verify(accountRepository, times(1)).findByUserId(mockUserId);
     }
 
 }

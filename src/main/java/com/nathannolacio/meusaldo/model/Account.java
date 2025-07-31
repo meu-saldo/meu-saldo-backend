@@ -35,6 +35,14 @@ public class Account {
         this.user = user;
     }
 
+    public Account(Long id, String name, String description, BigDecimal balance, User user) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.balance = balance;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }

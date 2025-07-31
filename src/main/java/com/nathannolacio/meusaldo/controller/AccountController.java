@@ -9,10 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
@@ -36,6 +35,24 @@ public class AccountController {
     public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRequestDTO dto) {
         AccountResponseDTO accountResponse = accountService.createAccount(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
+    }
+
+    @Operation(summary = "Lista todas as contas cadastradas do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuários retornados com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Operação realizada com sucesso, porém com retorno vazio"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    @GetMapping
+    public ResponseEntity<List<AccountResponseDTO>> getAllAccounts() {
+        List<AccountResponseDTO> accounts = accountService.getAllAccounts();
+
+        if (accounts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        return ResponseEntity.ok(accounts);
     }
 
 }

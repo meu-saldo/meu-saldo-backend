@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -43,6 +45,15 @@ public class AccountService {
         Account savedAccount = accountRepository.save(account);
 
         return new AccountResponseDTO(savedAccount);
+    }
+
+    public List<AccountResponseDTO> getAllAccounts() {
+        Long userId = authUtils.getAuthenticatedUserId();
+
+        return accountRepository.findByUserId(userId)
+                .stream()
+                .map(AccountResponseDTO::new)
+                .toList();
     }
 
 }
