@@ -6,6 +6,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record TransactionRequestDTO(
@@ -18,7 +19,7 @@ public record TransactionRequestDTO(
 
         @DecimalMin(value = "0.01")
         @NotNull(message = "O campo valor não pode estar vazio")
-        Double amount,
+        BigDecimal amount,
 
         @NotNull(message = "O tipo da transação deve ser preenchido")
         TransactionType type,

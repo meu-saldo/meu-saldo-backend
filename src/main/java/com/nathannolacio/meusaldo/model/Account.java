@@ -19,8 +19,8 @@ public class Account {
     private BigDecimal balance;
     private boolean active = true;
 
-    @OneToMany(mappedBy = "account")
-    private List<Transaction> transactions;
+//    @OneToMany(mappedBy = "account")
+//    private List<Transaction> transactions;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

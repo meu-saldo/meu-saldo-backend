@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -16,7 +17,7 @@ public class Transaction {
 
     private LocalDate date;
     private String description;
-    private Double amount;
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     private TransactionType type;
@@ -28,7 +29,7 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(Long id, LocalDate date, String description, Double amount, TransactionType type, Account account, User user) {
+    public Transaction(Long id, LocalDate date, String description, BigDecimal amount, TransactionType type, Account account, User user) {
         this.id = id;
         this.date = date;
         this.description = description;
@@ -37,7 +38,7 @@ public class Transaction {
         this.account = account;
     }
 
-    public Transaction(LocalDate date, String description, Double amount, TransactionType type, Account account) {
+    public Transaction(LocalDate date, String description, BigDecimal amount, TransactionType type, Account account) {
         this.date = date;
         this.description = description;
         this.amount = amount;
@@ -69,11 +70,11 @@ public class Transaction {
         this.description = description;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
