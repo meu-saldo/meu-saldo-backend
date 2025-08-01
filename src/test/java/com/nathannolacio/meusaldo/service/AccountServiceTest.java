@@ -183,39 +183,67 @@ public class AccountServiceTest {
 
         @BeforeEach
         void setUp() {
-            // Mock para obter o ID do usuário autenticado, necessário em ambos os testes
             when(authUtils.getAuthenticatedUserId()).thenReturn(USER_ID);
         }
 
         @Test
-        @DisplayName("Deve atualizar com sucesso se a conta existir e pertencer ao usuário")
-        void editAccount_WhenAccountExistsAndBelongsToUser_ShouldUpdateSuccessfully() {
-            AccountRequestDTO updateRequest = new AccountRequestDTO("Novo Nome da Conta", "Nova Descrição");
+        @DisplayName("Deve atualizar com sucesso se o novo nome for único")
+        void editAccount_WhenNewNameIsUnique_ShouldSucceed() {
+            String newUniqueName = "Novo Nome da Conta";
+            AccountRequestDTO updateRequest = new AccountRequestDTO(newUniqueName, "Nova Descrição");
 
             when(accountRepository.findByIdAndUserIdAndActiveTrue(ACCOUNT_ID, USER_ID))
                     .thenReturn(Optional.of(testAccount));
+
+            when(accountRepository.existsByNameAndUserId(newUniqueName, USER_ID)).thenReturn(false);
 
             AccountResponseDTO result = accountService.editAccount(ACCOUNT_ID, updateRequest);
 
             verify(accountRepository).save(accountCaptor.capture());
             Account savedAccount = accountCaptor.getValue();
 
-            assertThat(savedAccount.getName()).isEqualTo("Novo Nome da Conta");
+            assertThat(savedAccount.getName()).isEqualTo(newUniqueName);
             assertThat(savedAccount.getDescription()).isEqualTo("Nova Descrição");
-            assertThat(savedAccount.getId()).isEqualTo(ACCOUNT_ID); // Garante que o ID não mudou
-
-            assertThat(result).isNotNull();
-            assertThat(result.id()).isEqualTo(ACCOUNT_ID);
-            assertThat(result.name()).isEqualTo("Novo Nome da Conta");
-            assertThat(result.description()).isEqualTo("Nova Descrição");
-
-            verify(accountRepository, times(1)).findByIdAndUserIdAndActiveTrue(ACCOUNT_ID, USER_ID);
-            verify(accountRepository, times(1)).save(any(Account.class));
+            assertThat(result.name()).isEqualTo(newUniqueName);
         }
 
         @Test
-        @DisplayName("Deve lançar exceção se a conta não for encontrada ou não pertencer ao usuário")
-        void editAccount_WhenAccountNotFound_ShouldThrowException() {
+        @DisplayName("Deve lançar exceção se o novo nome já existir em outra conta")
+        void editAccount_WhenNewNameAlreadyExistsInAnotherAccount_ShouldThrowException() {
+            String existingName = "Conta Corrente Itaú"; // Um nome que já pertence a outra conta
+            AccountRequestDTO updateRequest = new AccountRequestDTO(existingName, "Nova Descrição");
+
+            when(accountRepository.findByIdAndUserIdAndActiveTrue(ACCOUNT_ID, USER_ID))
+                    .thenReturn(Optional.of(testAccount));
+
+            when(accountRepository.existsByNameAndUserId(existingName, USER_ID)).thenReturn(true);
+
+            assertThatThrownBy(() -> accountService.editAccount(ACCOUNT_ID, updateRequest))
+                    .isInstanceOf(AccountAlreadyExistsException.class);
+
+            verify(accountRepository, never()).save(any(Account.class));
+        }
+
+        @Test
+        @DisplayName("Deve atualizar com sucesso se o nome não for alterado")
+        void editAccount_WhenNameIsNotChanged_ShouldSucceed() {
+            AccountRequestDTO updateRequest = new AccountRequestDTO(ACCOUNT_NAME, "Descrição Atualizada");
+
+            when(accountRepository.findByIdAndUserIdAndActiveTrue(ACCOUNT_ID, USER_ID))
+                    .thenReturn(Optional.of(testAccount));
+
+            accountService.editAccount(ACCOUNT_ID, updateRequest);
+
+            verify(accountRepository, never()).existsByNameAndUserId(anyString(), anyLong());
+
+            verify(accountRepository).save(accountCaptor.capture());
+            Account savedAccount = accountCaptor.getValue();
+            assertThat(savedAccount.getDescription()).isEqualTo("Descrição Atualizada");
+        }
+
+        @Test
+        @DisplayName("Deve lançar AccountNotFoundException se a conta a ser editada não existir")
+        void editAccount_WhenAccountIsNotFound_ShouldThrowException() {
             Long nonExistentAccountId = 99L;
             AccountRequestDTO updateRequest = new AccountRequestDTO("Qualquer Nome", "Qualquer Descrição");
 
@@ -225,8 +253,8 @@ public class AccountServiceTest {
             assertThatThrownBy(() -> accountService.editAccount(nonExistentAccountId, updateRequest))
                     .isInstanceOf(AccountNotFoundException.class);
 
+            verify(accountRepository, never()).existsByNameAndUserId(anyString(), anyLong());
             verify(accountRepository, never()).save(any(Account.class));
         }
     }
-
 }

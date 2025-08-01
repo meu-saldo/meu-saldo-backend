@@ -73,7 +73,15 @@ public class AccountService {
         Account account = accountRepository.findByIdAndUserIdAndActiveTrue(accountId, userId)
                 .orElseThrow(AccountNotFoundException::new);
 
-        account.setName(dto.name());
+        boolean nameChanged = !dto.name().equals(account.getName());
+
+        if (nameChanged) {
+            if (accountRepository.existsByNameAndUserId(dto.name(), userId)) {
+                throw new AccountAlreadyExistsException();
+            }
+            account.setName(dto.name());
+        }
+
         account.setDescription(dto.description());
 
         accountRepository.save(account);
