@@ -57,7 +57,7 @@ public class AccountService {
                 .toList();
     }
 
-    public void deactiveAccount(Long accountId) {
+    public void deactivateAccount(Long accountId) {
         Long userId = authUtils.getAuthenticatedUserId();
 
         Account account = accountRepository.findById(accountId).
@@ -65,6 +65,20 @@ public class AccountService {
 
         account.setActive(false);
         accountRepository.save(account);
+    }
+
+    public AccountResponseDTO editAccount(Long accountId, AccountRequestDTO dto) {
+        Long userId = authUtils.getAuthenticatedUserId();
+
+        Account account = accountRepository.findByIdAndUserIdAndActiveTrue(accountId, userId)
+                .orElseThrow(AccountNotFoundException::new);
+
+        account.setName(dto.name());
+        account.setDescription(dto.description());
+
+        accountRepository.save(account);
+
+        return new AccountResponseDTO(account);
     }
 
 }

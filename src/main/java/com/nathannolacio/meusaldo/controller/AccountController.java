@@ -62,9 +62,15 @@ public class AccountController {
             @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deactiveAccount(@PathVariable Long id) {
-        accountService.deactiveAccount(id);
+    public ResponseEntity<Void> deactivateAccount(@PathVariable Long id) {
+        accountService.deactivateAccount(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountResponseDTO> editAccount(@PathVariable Long id, @Valid @RequestBody AccountRequestDTO dto) {
+        AccountResponseDTO accountUpdated = accountService.editAccount(id, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(accountUpdated);
     }
 
 }
