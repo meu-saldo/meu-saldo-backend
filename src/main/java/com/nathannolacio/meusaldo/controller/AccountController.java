@@ -67,6 +67,14 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Edita os dados de uma conta do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Conta editada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "404", description = "Conta não encontrada"),
+            @ApiResponse(responseCode = "409", description = "Nome de conta já utilizado por esse usuário"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<AccountResponseDTO> editAccount(@PathVariable Long id, @Valid @RequestBody AccountRequestDTO dto) {
         AccountResponseDTO accountUpdated = accountService.editAccount(id, dto);
